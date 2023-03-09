@@ -1,17 +1,45 @@
+struct DSU
+{
+    int connected;
+    vector<int> par, sz;
 
+    void init(int n)
+    {
+        par = sz = vector<int>(n + 1, 0);
+        for (int i = 1; i <= n; i++)
+            par[i] = i, sz[i] = 1;
+        connected = n;
+    }
 
-struct dsu {
-    vector<ll> e;
-    dsu(ll n) : e(n, -1) {}
-    bool sameSet(ll a, ll b) { return find(a) == find(b); }
-    ll size(ll x) { return -e[find(x)]; }
-    ll find(ll x) { return e[x] < 0 ? x : e[x] = find(e[x]); }
-    bool join(ll a, ll b) {
-        a = find(a), b = find(b);
-        if (a == b) return false;
-        if (e[a] > e[b]) swap(a, b);
-        e[a] += e[b]; e[b] = a;
-        return true;
+    int getPar(int u)
+    {
+        while (u != par[u])
+        {
+            par[u] = par[par[u]];
+            u = par[u];
+        }
+        return u;
+    }
+
+    int getSize(int u)
+    {
+        return sz[getPar(u)];
+    }
+
+    void unite(int u, int v)
+    {
+        int par1 = getPar(u), par2 = getPar(v);
+
+        if (par1 == par2)
+            return;
+
+        connected--;
+
+        if (sz[par1] > sz[par2])
+            swap(par1, par2);
+
+        sz[par2] += sz[par1];
+        sz[par1] = 0;
+        par[par1] = par[par2];
     }
 };
- 
